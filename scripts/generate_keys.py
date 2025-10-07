@@ -1,1 +1,1 @@
-#Codigo para generar llame para cifrado simetrico
+#Codigo para generar llaves para cifrado asimetrico

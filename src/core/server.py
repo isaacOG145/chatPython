@@ -1,5 +1,6 @@
 import socket
 import threading
+import time
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import serialization, hashes
 
@@ -9,6 +10,8 @@ PORT = 9999
 clients = {}  # {socket: (username, public_key)}
 clients_lock = threading.Lock()
 
+DEBUG = True  # Cambia a False para ocultar tiempos
+
 # === Cargar llaves del servidor ===
 def load_server_keys():
     with open("keys/server_private.pem", "rb") as f:
@@ -17,9 +20,11 @@ def load_server_keys():
         public_key = serialization.load_pem_public_key(f.read())
     return private_key, public_key
 
+
 def encrypt_message(public_key, message: str):
     """Cifra un mensaje con la llave pública dada."""
-    return public_key.encrypt(
+    start = time.perf_counter()
+    encrypted = public_key.encrypt(
         message.encode('utf-8'),
         padding.OAEP(
             mgf=padding.MGF1(algorithm=hashes.SHA256()),
@@ -27,10 +32,16 @@ def encrypt_message(public_key, message: str):
             label=None
         )
     )
+    end = time.perf_counter()
+    if DEBUG:
+        print(f"[DEBUG] Cifrado en {end - start:.6f} segundos")
+    return encrypted
+
 
 def decrypt_message(private_key, ciphertext: bytes):
     """Descifra un mensaje con la llave privada del servidor."""
-    return private_key.decrypt(
+    start = time.perf_counter()
+    message = private_key.decrypt(
         ciphertext,
         padding.OAEP(
             mgf=padding.MGF1(algorithm=hashes.SHA256()),
@@ -38,6 +49,11 @@ def decrypt_message(private_key, ciphertext: bytes):
             label=None
         )
     ).decode('utf-8')
+    end = time.perf_counter()
+    if DEBUG:
+        print(f"[DEBUG] Descifrado en {end - start:.6f} segundos")
+    return message
+
 
 def broadcast(message, sender_sock=None):
     """Envía un mensaje cifrado a todos los clientes (excepto al remitente)."""
@@ -51,6 +67,7 @@ def broadcast(message, sender_sock=None):
             except Exception:
                 remove_client(sock)
 
+
 def remove_client(client_sock):
     """Elimina al cliente del diccionario y cierra su socket."""
     with clients_lock:
@@ -59,6 +76,7 @@ def remove_client(client_sock):
         client_sock.close()
     except:
         pass
+
 
 def handle_client(client_sock, addr, server_private_key, server_public_key):
     try:
@@ -108,6 +126,7 @@ def handle_client(client_sock, addr, server_private_key, server_public_key):
             broadcast(leave_msg)
         remove_client(client_sock)
 
+
 def run_server():
     server_private, server_public = load_server_keys()
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -128,6 +147,7 @@ def run_server():
         print("Servidor detenido.")
     finally:
         sock.close()
+
 
 if __name__ == '__main__':
     run_server()

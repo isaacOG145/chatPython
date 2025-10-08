@@ -1,6 +1,7 @@
-# server.py
+import time
 import socket
 import threading
+from cryptography.fernet import Fernet
 
 HOST = 'localhost'
 PORT = 9999
@@ -9,16 +10,37 @@ PORT = 9999
 clients = {}
 clients_lock = threading.Lock()
 
-def broadcast(message, sender_sock=None):
-    """Envía message a todos los clientes excepto sender_sock (si se proporciona)."""
+DEBUG = True 
+
+with open("keys/symmetric.key", "rb") as f:
+    fernet = Fernet(f.read())
+
+def encrypt(msg: str) -> bytes:
+    start = time.perf_counter()
+    token = fernet.encrypt(msg.encode('utf-8'))
+    end = time.perf_counter()
+    if DEBUG:
+        print(f"[DEBUG] Cifrado en {end - start:.6f} segundos")
+    return token
+
+def decrypt(token: bytes) -> str:
+    start = time.perf_counter()
+    msg = fernet.decrypt(token).decode('utf-8')
+    end = time.perf_counter()
+    if DEBUG:
+        print(f"[DEBUG] Descifrado en {end - start:.6f} segundos")
+    return msg
+
+def broadcast(message: str, sender_sock=None):
+    """Envía message (ya como texto normal) cifrado a todos los clientes excepto el remitente."""
+    encrypted_msg = encrypt(message)
     with clients_lock:
         for client in list(clients.keys()):
             if client is sender_sock:
                 continue
             try:
-                client.sendall(message.encode('utf-8'))
+                client.sendall(encrypted_msg)
             except Exception:
-                # si falla el envío, quitar el cliente
                 remove_client(client)
 
 def remove_client(client_sock):
@@ -32,8 +54,8 @@ def remove_client(client_sock):
 
 def handle_client(client_sock, addr):
     try:
-        # Primer mensaje esperado: el nombre de usuario
-        username = client_sock.recv(1024).decode('utf-8').strip()
+        # Primer mensaje esperado: el nombre de usuario (cifrado)
+        username = decrypt(client_sock.recv(1024)).strip()
         if not username:
             client_sock.close()
             return
@@ -45,15 +67,13 @@ def handle_client(client_sock, addr):
         print(join_msg)
         broadcast(join_msg, sender_sock=client_sock)
 
-        # Loop para recibir mensajes del cliente
+        # Loop para recibir mensajes cifrados
         while True:
-            data = client_sock.recv(1024).decode('utf-8')
+            data = client_sock.recv(1024)
             if not data:
-                # conexión cerrada por el cliente
                 break
-            text = data.strip()
+            text = decrypt(data).strip()
             if text.lower() == 'exit':
-                # cliente solicita desconectarse
                 break
 
             message = f"{username}: {text}"
@@ -64,7 +84,6 @@ def handle_client(client_sock, addr):
         print(f"Error con {addr}: {e}")
 
     finally:
-        # limpieza y notificación de desconexión
         with clients_lock:
             username = clients.pop(client_sock, None)
         if username:

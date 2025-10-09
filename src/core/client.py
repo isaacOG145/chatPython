@@ -13,6 +13,7 @@ def load_client_keys():
         public_key = serialization.load_pem_public_key(f.read())
     return private_key, public_key
 
+#Encriptar mensaje 
 def encrypt_message(public_key, message: str):
     return public_key.encrypt(
         message.encode('utf-8'),
@@ -22,7 +23,7 @@ def encrypt_message(public_key, message: str):
             label=None
         )
     )
-
+#Desencriptar mensaje 
 def decrypt_message(private_key, ciphertext: bytes):
     return private_key.decrypt(
         ciphertext,

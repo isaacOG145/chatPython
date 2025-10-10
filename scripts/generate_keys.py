@@ -1,49 +1,50 @@
 #!/usr/bin/env python3
 """
-Script para generar claves RSA asimétricas del servidor.
-Crea la carpeta /keys en el raíz del proyecto (si no existe)
-y genera los archivos server_private.pem y server_public.pem.
-
-Uso:
-    python scripts/generate_keys.py [--force] [--bits 2048|4096] [--passphrase]
+VERSIÓN 1.0 - RSA + SHA256
+Genera par de llaves RSA 2048 bits para el servidor.
+Algoritmo: RSA + SHA256
 """
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import hashes
 import os
 
-#generar llaves 
-def generate_rsa_keys(prefix):
+def generate_rsa_keys():
+    print("Generando llaves RSA 2048 bits con SHA256...")
+    
+    # Generar clave privada RSA
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=2048
     )
-    #llave privada
+    
+    # Serializar clave privada
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
-        format=serialization.PrivateFormat.TraditionalOpenSSL,
+        format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption()
     )
-    #llave publica
+    
+    # Serializar clave pública
     public_pem = private_key.public_key().public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo
     )
 
-    with open(f"keys/{prefix}_private.pem", "wb") as f:
+    # Guardar archivos
+    with open("keys/server_private.pem", "wb") as f:
         f.write(private_pem)
 
-    with open(f"keys/{prefix}_public.pem", "wb") as f:
+    with open("keys/server_public.pem", "wb") as f:
         f.write(public_pem)
 
-    print(f"Llaves generadas: {prefix}_private.pem y {prefix}_public.pem")
+    print("✓ Llaves RSA generadas: server_private.pem y server_public.pem")
 
 def main():
     os.makedirs("keys", exist_ok=True)
-
-    print("Generando llaves RSA para servidor...")
-    generate_rsa_keys("server")  #generar llaves publica y privada
-    print("\nLlaves del servidor generadas correctamente en /keys")
+    generate_rsa_keys()
+    print("\n✅ VERSIÓN 1.0 - Llaves RSA+SHA256 generadas correctamente")
 
 if __name__ == "__main__":
     main()

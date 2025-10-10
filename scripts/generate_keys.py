@@ -44,7 +44,7 @@ def generate_rsa_keys():
 def main():
     os.makedirs("keys", exist_ok=True)
     generate_rsa_keys()
-    print("\n✅ VERSIÓN 1.0 - Llaves RSA+SHA256 generadas correctamente")
+    print("\nVERSIÓN 1.0 - Llaves RSA+SHA256 generadas correctamente")
 
 if __name__ == "__main__":
     main()

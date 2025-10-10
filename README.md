@@ -20,7 +20,18 @@ md5 client: 7250ebc774c3ae1ba70cd115c05b119e
 md5 generate_keys:cbbc0276f524cee6592422438b37eb8e
 md5 main.py: 750daf3903368979c3bf19d489a39d05
 
-Chat asimetrico 1.1
+Chat asimetrico 1.1 
+
+Se añade sha256 al encryptar y desencryptar la llave
+
+MD5 Linux 
+
+md5 server.py: 5c1d58747c76594183f85078115258db
+md5 client.py: f9f3a62e2f976e1df47ca0dc29e934c8
+md5 generate_keys: 96d6694f4967db013a2fa2f47fa91d56
+md5 main.py 750daf3903368979c3bf19d489a39d05
+
+
 
 
 

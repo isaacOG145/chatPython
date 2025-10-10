@@ -129,17 +129,17 @@ def run_server():
     sock.bind((HOST, PORT))
     sock.listen(10)
     
-    print(f"🚀 Servidor iniciado en {HOST}:{PORT}")
-    print("🔐 Algoritmo: RSA 2048 + SHA256")
-    print("🗝️  Llaves: 2 (servidor)")
-    print("📨 Clientes → Servidor: CIFRADO")
-    print("📨 Servidor → Clientes: TEXTO PLANO")
-    print("⏹️  Presiona Ctrl+C para detener\n")
+    print(f"Servidor iniciado en {HOST}:{PORT}")
+    print("Algoritmo: RSA 2048 + SHA256")
+    print("Llaves: 2 (servidor)")
+    print("Clientes → Servidor: CIFRADO")
+    print("Servidor → Clientes: TEXTO PLANO")
+    print("⏹Presiona Ctrl+C para detener\n")
 
     try:
         while True:
             client_sock, client_addr = sock.accept()
-            print(f"✅ Nueva conexión: {client_addr}")
+            print(f"Nueva conexión: {client_addr}")
             
             threading.Thread(
                 target=handle_client,

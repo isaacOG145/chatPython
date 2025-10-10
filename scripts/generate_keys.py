@@ -40,10 +40,9 @@ def generate_rsa_keys(prefix):
 def main():
     os.makedirs("keys", exist_ok=True)
 
-    print("Generando llaves RSA para servidor y cliente...")
-    generate_rsa_keys("server")
-    generate_rsa_keys("client")
-    print("\n✅ Todas las llaves se han generado correctamente en /keys")
+    print("Generando llaves RSA para servidor...")
+    generate_rsa_keys("server")  #generar llaves publica y privada
+    print("\nLlaves del servidor generadas correctamente en /keys")
 
 if __name__ == "__main__":
     main()

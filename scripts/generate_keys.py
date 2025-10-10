@@ -12,18 +12,19 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 import os
 
+#generar llaves 
 def generate_rsa_keys(prefix):
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=2048
     )
-
+    #llave privada
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.TraditionalOpenSSL,
         encryption_algorithm=serialization.NoEncryption()
     )
-
+    #llave publica
     public_pem = private_key.public_key().public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo
@@ -35,7 +36,7 @@ def generate_rsa_keys(prefix):
     with open(f"keys/{prefix}_public.pem", "wb") as f:
         f.write(public_pem)
 
-    print(f"🔑 Llaves generadas: {prefix}_private.pem y {prefix}_public.pem")
+    print(f"Llaves generadas: {prefix}_private.pem y {prefix}_public.pem")
 
 def main():
     os.makedirs("keys", exist_ok=True)

@@ -18,6 +18,14 @@ md5 client.py: 4a062efba2c502e39e0704f26fb0f5ac
 
 MD5 Windows
 
+#Chat simetrico 1.1 
+
+MD5 Linux
+
+md5 main.py: 750daf3903368979c3bf19d489a39d05
+md5 generate_key.py: fffbb5f3d8465307f88ec9a5cc3f6481
+md5 server.py: 2384eb7a762b06947b14bf1dd3c4302f
+md5 client.py: 5b2c1263d8339d6416a73fb3402d38d5
 
 
 

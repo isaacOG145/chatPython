@@ -15,28 +15,24 @@ def generate_symmetric_key():
     """Genera clave AES derivada con SHA256."""
     print("Generando clave simétrica AES con SHA256...")
     
-    # Usar passphrase fija para consistencia
     passphrase = "chat_secure_passphrase_v1_1"
     
-    # Derivar clave AES usando PBKDF2 con SHA256
-    salt = b'chat_salt_v1_1_'  # Salt fijo
+    salt = b'chat_salt_v1_1_' 
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
-        length=32,  # 32 bytes para AES-256
+        length=32,  
         salt=salt,
         iterations=100000,
     )
     
-    # Generar clave
     key = kdf.derive(passphrase.encode())
     
-    # Guardar clave en base64
     with open("keys/symmetric.key", "wb") as f:
         f.write(base64.urlsafe_b64encode(key))
     
-    print("✅ Clave simétrica AES-SHA256 generada en 'keys/symmetric.key'")
-    print(f"🔐 Algoritmo: AES-256-GCM")
-    print(f"🔗 Derivación: PBKDF2-HMAC-SHA256")
+    print("Clave simétrica AES-SHA256 generada en 'keys/symmetric.key'")
+    print(f"Algoritmo: AES-256-GCM")
+    print(f"Derivación: PBKDF2-HMAC-SHA256")
 
 def main():
     os.makedirs("keys", exist_ok=True)

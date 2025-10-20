@@ -28,4 +28,13 @@ md5 server.py: 2384eb7a762b06947b14bf1dd3c4302f
 md5 client.py: 5b2c1263d8339d6416a73fb3402d38d5
 
 
+chat simetrico 1.2 
+
+instalar para la interfaz: pip install PySide6, pip install PyQt5
+pass temporales /*admin, password  123456*/
+
+MD5 windows 
+
+
+
 

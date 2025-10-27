@@ -18,8 +18,6 @@ md5 client.py: 4a062efba2c502e39e0704f26fb0f5ac
 
 #Chat simetrico 1.1 
 
-MD5 Linux
-
 md5 main.py: 750daf3903368979c3bf19d489a39d05
 md5 generate_key.py: fffbb5f3d8465307f88ec9a5cc3f6481
 md5 server.py: 2384eb7a762b06947b14bf1dd3c4302f
@@ -30,6 +28,7 @@ chat simetrico 1.2
 instalar para la interfaz: pip install PySide6, pip install PyQt5
 pass temporales /*admin, password  123456*/
 
+//
 md5 main.py: 6814a9f01b7600b0a5c66db660f31f88
 md5 generate_key: a219dd5b6ad28b00e459dc85c0174a27 
 md5 src/core/auth.py 1ae318967ac205e802b258126bf4f8a0  

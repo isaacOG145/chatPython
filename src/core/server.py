@@ -7,6 +7,7 @@ Solo usa 2 llaves (servidor).
 
 import socket
 import threading
+import time
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import serialization, hashes
 
@@ -95,14 +96,21 @@ def handle_client(client_sock, addr, server_private_key, server_public_key):
             if not encrypted_data:
                 break
 
+            # Medir solo el tiempo de procesamiento, no el tiempo de espera del recv()
+            start_time = time.time()
+            
             # Descifrar mensaje del cliente
             text = decrypt_message(server_private_key, encrypted_data)
             if text.lower() == 'exit':
                 break
 
-            print(f"{username}: {text}")
+            message = f"{username}: {text}"
+            print(message)
             # Retransmitir en texto plano
-            broadcast(f"{username}: {text}", sender_sock=client_sock)
+            broadcast(message, sender_sock=client_sock)
+            
+            execution_time = time.time() - start_time
+            print(f"[LOG] Esto es asimétrico - Mensaje recibido y enviado - Tiempo de ejecución: {execution_time:.6f} segundos")
 
     except Exception as e:
         print(f"Error con {addr}: {e}")
